@@ -52,8 +52,9 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
                 setFieldValue('file', event.target.files[0]);
               }}
             />
-            <ErrorMessage name="file" />
-
+            <div className={css.errorWrap}>
+               <ErrorMessage name="file" className={css.error}/>
+            </div>
             {values.file ? (
               <PreviewImage file={values.file} />
             ) : (
@@ -62,10 +63,13 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
                 alt="Default"
                 width="182px"
                 height="182px"
+                onClick={() => {
+                  fileRef.current.click()
+                }}
               />
             )}
             </div>
-
+            {!values.file ? 
             <button
               type="button"
               onClick={() => {
@@ -75,7 +79,7 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
             >
               <CameraIcon id="svg" />
               Edit photo
-            </button>
+            </button> :
             <button
               type="button"
               onClick={() => {
@@ -85,7 +89,7 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
             >
               <ConfirmIcon id="svg" />
               Confirm
-            </button>
+            </button>}
             </div>
             <div className={css.inputContainer}>
               <div className={css.inputWrap}>
@@ -100,7 +104,7 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
                   Log Out
               </Link>
             </div>
-            {/* <button type="submit">Submit</button> */}
+            <button type="submit">Submit</button>
           </Form>
         )}
       </Formik>

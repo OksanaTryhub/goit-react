@@ -10,36 +10,29 @@ import Container from 'Components/Container/Container';
 import { signup } from 'Redux/auth/auth-operations';
 
 const RegisterPage = () => {
-  const [token, setToken] = useState('');
-  // const [error, setError] = useState(null)
+  const [token, setToken] = useState(''); 
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+ 
+  const handleSubmit = async ({email, password}, { setSubmitting }) => { 
+    const data = {email, password};
 
-  // const handleSignup = (data) => {
-  //   console.log(data)
-  //     const result = dispatch(signup(data))
-  //     setToken(result.token);
-  // };
-
-    const handleSubmit = async (data, { setSubmitting }) => {
-    try {
-      const result = await dispatch(signup(data));
-      navigate('/user');
-      setToken (result.token)
-
-    } catch (error) {
-      console.log(error,'Something went wrong');
-    }
-    setSubmitting(false);
-  };
+    try { 
+      const result = await dispatch(signup(data)); 
+      // navigate('/user'); 
+      setToken(result.token)      
+    } catch (error) { 
+      console.log(error,'Something went wrong'); 
+    } 
+    setSubmitting(false); 
+  }; 
 
   return (
     <Section>
       <Container>
         <AuthForm isRegister onSubmit={handleSubmit} />
-        {token && <p>Registred {token}</p>}
-      </Container>
+       </Container>
     </Section>
   );
 };
