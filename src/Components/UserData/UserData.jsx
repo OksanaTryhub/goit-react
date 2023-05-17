@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
-import {useDispatch} from 'react-redux';
-import { Link} from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Formik, Form, ErrorMessage } from 'formik';
 import { userDataValidationSchema } from 'Shared/validation';
@@ -11,19 +11,42 @@ import CameraIcon from 'Components/SvgIcons/CameraIcon';
 import ConfirmIcon from 'Components/SvgIcons/ConfirmIcon';
 import LogoutIcon from 'Components/SvgIcons/LogoutIcon';
 import { PreviewImage } from './UserDataItem';
+import ModalApproveAction from 'Components/Modal/ModalApproveAction';
 
 import { logout } from 'Redux/auth/auth-operations';
+import { isUserLogin } from 'Redux/auth/auth-selectors';
 
 import css from './UserData.module.css';
- 
-const UserData = ({photo, name, birthday, email, phone, city}) => {
- 
+
+const UserData = ({ photo, name, birthday, email, phone, city, onSubmit }) => {
+  const [showModal, setShowModal] = useState(false); 
+  const isLogin = useSelector(isUserLogin);
+  // const user = useSelector(getUser);
+  const navigate = useNavigate();
   const fileRef = useRef(null);
   const dispatch = useDispatch();
 
+  
+
+  useEffect(() => {
+    if (!isLogin) {
+      navigate('/login');
+      
+    }
+  }, [isLogin, navigate]);
+ 
+
   const onLogout = () => {
-    dispatch(logout()); 
+    setShowModal(true);
   };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  }
+
+  const handleLogout = () => {
+    dispatch(logout()); 
+  }
 
   return (
     <div className={css.user}>
@@ -31,14 +54,14 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
       <Formik
         initialValues={{
           file: photo || null,
-          name:name || '',
+          name: name || '',
           email: email || '',
           birthday: birthday || '',
           phone: phone || '',
-          city:city || '',
+          city: city || '',
         }}
         validationSchema={userDataValidationSchema}
-        onSubmit={values => console.log(values)}
+        onSubmit={onSubmit}
       >
         {({ values, setFieldValue }) => (
           <Form className={css.form}>
@@ -53,7 +76,7 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
               }}
             />
             <div className={css.errorWrap}>
-               <ErrorMessage name="file" className={css.error}/>
+                <ErrorMessage name="file" className={css.error}/>
             </div>
             {values.file ? (
               <PreviewImage file={values.file} />
@@ -95,12 +118,12 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
               <div className={css.inputWrap}>
               <UserDataItem type="text" name="name" label="Name" />
               <UserDataItem type="email" name="email" label="Email" />
-              <UserDataItem type="text" name="birthday" label="Birthday" />
+              <UserDataItem type="date" name="birthday" label="Birthday" />
               <UserDataItem type="text" name="phone" label="Phone" />
               <UserDataItem type="text" name="city" label="City" />
             </div>
               <Link className={css.link} onClick={onLogout}>
-                <LogoutIcon id='svg'/>
+                <LogoutIcon id='svg' className={css.logoutIcon}/>
                   Log Out
               </Link>
             </div>
@@ -108,7 +131,11 @@ const UserData = ({photo, name, birthday, email, phone, city}) => {
           </Form>
         )}
       </Formik>
-      
+      {showModal && (
+        <ModalApproveAction onClose={handleCloseModal} handleApproveClick={handleLogout}>
+          <h2 className={css.modalTitle}>Already leaving?</h2>
+        </ModalApproveAction>
+        )}
     </div>
   );
 };

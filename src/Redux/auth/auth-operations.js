@@ -1,32 +1,30 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import * as api from "../../Shared/api/auth-api";
+import * as api from '../../Shared/api/auth-api';
 
 export const signup = createAsyncThunk(
-    "auth/signup",
-    async(data, {rejectWithValue}) => {
-        try {
-            const {data: result} = await api.signup(data);
-            return result;
-        }
-        catch({response}) {
-            return rejectWithValue(response);
-        }
+  'auth/signup',
+  async (data, { rejectWithValue }) => {
+    try {
+      const result = await api.signup(data);
+      return result;
+    } catch ({ response }) {
+      return rejectWithValue(response);
     }
-)
+  }
+);
 
 export const login = createAsyncThunk(
-    "auth/login",
-    async(data, {rejectWithValue}) => {
-        try {
-            const {data: result} = await api.login(data);
-            return result;
-        }
-        catch({response}) {
-            return rejectWithValue(response);
-        }
+  'auth/login',
+  async (data, { rejectWithValue }) => {
+    try {
+      const result = await api.login(data);
+      return result;
+    } catch ({ response }) {
+      return rejectWithValue(response);
     }
-)
+  }
+);
 
 export const current = createAsyncThunk(
   'auth/current',
@@ -34,7 +32,7 @@ export const current = createAsyncThunk(
     try {
       const { auth } = getState();
       const data = await api.getCurrent(auth.token);
-
+      console.log("RESULT DATA", data);
       return data;
     } catch ({ response }) {
       return rejectWithValue(response);
@@ -56,7 +54,7 @@ export const updateUser = createAsyncThunk(
     try {
       const { auth } = getState();
       const updatedUser = await api.updateUser(auth.token, data);
-
+      console.log("RESULT OF UPDATEUSER=>", updatedUser);
       return updatedUser;
     } catch ({ response }) {
       return rejectWithValue(response);

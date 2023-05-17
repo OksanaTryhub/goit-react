@@ -7,11 +7,11 @@
     font-weight: 600;
     font-size: 14px;
     line-height: 19px;
-    letter-spacing: 0.04em; 
+    letter-spacing: 0.04em;
 }
 
 .preview__img {
     width: 100%;
     height: 100%;
-    object-fit: cover;  
+    object-fit: cover;
 }

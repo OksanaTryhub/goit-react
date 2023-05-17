@@ -5,9 +5,10 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from './auth/auth-slice';
 import { newsReducer } from './news/news-slice';
 import { friendsReducer } from './ourFriends/ourFriends-slice';
+import { noticesReducer } from './notices/notices-slice';
 
 const authPersistConfig = {
-  key: 'root',
+  key: 'token',
   storage,
   whitelist: ['token'],
 };
@@ -18,4 +19,5 @@ export const rootReducer = combineReducers({
   auth: persistedAuthReducer,
   news: newsReducer,
   friends: friendsReducer,
+  notices: noticesReducer,
 });

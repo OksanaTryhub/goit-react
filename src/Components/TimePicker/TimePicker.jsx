@@ -1,35 +1,48 @@
 import React, { useState } from 'react';
 
-const TimePicker = () => {
+import css from './timepicker.module.css';
+
+const TimePicker = ({ timeOptions, menuZIndex }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [time, setTime] = useState('10:00 AM - 5:00 PM');
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSelect = newTime => {
-    setIsOpen(false);
-    setTime(newTime);
+  const weekDays = ['MN', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+
+  const day = new Date();
+  const dayOfWeek = day.getDay();
+
+  const currentDayWorkHours = () => {
+    if (timeOptions && timeOptions.length > 0) {
+      if (timeOptions[dayOfWeek].isOpen) {
+        return `${timeOptions[dayOfWeek].from} - ${timeOptions[dayOfWeek].to}`;
+      }
+    }
+    return 'CLOSED';
   };
 
-  const timeOptions = [
-    '9:00 AM - 4:00 PM',
-    '10:00 AM - 5:00 PM',
-    '11:00 AM - 6:00 PM',
-    '12:00 PM - 7:00 PM',
-  ];
-
   return (
-    <div>
-      <div onClick={handleToggle}>{time}</div>
+    <div className={css.timePicker}>
+      <div className={css.time} onClick={handleToggle}>
+        {currentDayWorkHours()}
+      </div>
       {isOpen && (
-        <ul>
-          {timeOptions.map(option => (
-            <li key={option} onClick={() => handleSelect(option)}>
-              {option}
-            </li>
-          ))}
+        <ul className={css.menu} style={{ zIndex: menuZIndex }}>
+          {timeOptions &&
+            timeOptions.length > 0 &&
+            timeOptions.map((option, index) => (
+              <li
+                className={index === dayOfWeek - 1 ? css.currentDay : ''}
+                key={index}
+              >
+                <div className={css.dayOfWeek}>{weekDays[index]} </div>
+                <div className={css.workTime}>
+                  {option.isOpen ? `${option.from} - ${option.to}` : 'CLOSED'}
+                </div>
+              </li>
+            ))}
         </ul>
       )}
     </div>

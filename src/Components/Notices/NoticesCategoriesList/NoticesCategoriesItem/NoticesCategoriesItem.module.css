@@ -1,0 +1,122 @@
+.card_item {
+  width: 288px;
+  height: 456px;
+  background: #ffffff;
+
+  box-shadow: 3px 8px 14px rgba(136, 198, 253, 0.19);
+  border-radius: 0px 0px 40px 40px;
+
+  @media screen and (min-width: 768px) {
+    .card_item {
+      width: 320px;
+      margin-bottom: 40px;
+    }
+  }
+
+  @media screen and (min-width: 1280px) {
+    .card_item {
+      width: 540px;
+      margin-bottom: 42px;
+    }
+  }
+}
+
+.btn_list {
+  display: flex;
+}
+
+.img_btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 4px;
+  gap: 4px;
+
+  width: 80px;
+  height: 28px;
+
+  background: #cce4fb;
+  border-radius: 16px;
+  border: transparent;
+
+  cursor: pointer;
+
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+
+  align-items: center;
+  letter-spacing: 0.04em;
+
+  color: #111111;
+}
+
+.favorite_btn {
+  width: 40px;
+  height: 40px;
+
+  background: #cce4fb;
+  border: transparent;
+  border-radius: 50%;
+
+  cursor: pointer;
+}
+
+.card_wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  width: 100%;
+  height: 288px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.38;
+  height: 66px;
+  overflow: auto;
+
+  color: #111111;
+
+  margin-bottom: 20px;
+}
+
+.btn {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
+
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.04em;
+
+  background-color: #ffffff;
+  color: #54adff;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 28px;
+  gap: 10px;
+  width: 248px;
+  height: 38px;
+  border: 2px solid #54adff;
+  border-radius: 40px;
+
+  cursor: pointer;
+}

@@ -3,18 +3,23 @@ import { Link } from 'react-router-dom';
 import css from './AuthNav.module.css';
 import { ReactComponent as Paw } from '../../SvgIcons/paw.svg';
 
-const isMobile = true;
+const isAuth = true;
 
-function AuthNav() {
+function AuthNav({ handleLinkClick }) {
+  const handleClick = () => {
+    if (handleLinkClick) {
+      handleLinkClick();
+    }
+  };
   return (
     <>
-      {!isMobile ? null : (
+      {!isAuth ? null : (
         <div className={css.auth}>
-          <Link to="/login" className={css.authButton}>
+          <Link to="/login" className={css.authButton} onClick={handleClick}>
             <span className={css.auth_text}>Log IN</span>
             <Paw className={css.svg} />
           </Link>
-          <Link to="/register" className={css.authButton}>
+          <Link to="/register" className={css.authButton} onClick={handleClick}>
             <span className={css.auth_text}>Registration</span>
           </Link>
         </div>
