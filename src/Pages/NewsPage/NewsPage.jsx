@@ -1,15 +1,14 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import ReactPaginate from 'react-paginate';
-// import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 
 import { fetchNews } from 'Redux/news/news-operations';
 import {
   selectIsLoading,
   selectError,
   selectNews,
-  // selectTotalPages,
+  selectTotalPages,
 } from 'Redux/news/news-selectors';
 
 import css from 'Pages/NewsPage/NewsPage.module.css';
@@ -26,7 +25,7 @@ const NewsPage = () => {
   const newsItems = useSelector(selectNews);
   const isLoading = useSelector(selectIsLoading);
   const error = useSelector(selectError);
-  // const totalPages = useSelector(selectTotalPages);
+  const totalPages = useSelector(selectTotalPages);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activePage, setActivePage] = useState(0);
@@ -44,25 +43,28 @@ const NewsPage = () => {
     dispatch(fetchNews({ searchQuery }));
   }, [dispatch, searchQuery]);
 
-  // const handlePageClick = ({ selected }) => {
-  //   console.log('CLICK');
-  //   window.scrollTo({ top: 0, behavior: 'smooth' });
-  //   const page = selected + 1;
-  //   setActivePage(selected);
-  //   dispatch(fetchNews({ searchQuery, page }));
-  // };
-
+  const handlePageClick = ({ selected }) => {
+    console.log('CLICK');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const page = selected + 1;
+    setActivePage(selected);
+    dispatch(fetchNews({ searchQuery, page }));
+  };
+  if (isLoading && !error) {
+    return <Loader />;
+  }
   return (
     <Section>
+      {/* {isLoading && <Loader />} Отображение лоадера только при isLoading */}
+      {error && <p>Error: {error}</p>}{' '}
+      {/* Отображение сообщения об ошибке, если есть error */}
       <Container>
         <Title>News</Title>
         <NewsSearch handleSearchChange={handleSearchChange} />
-        {isLoading && !error && <Loader />}
         {newsItems.length > 0 && <NewsList news={newsItems} />}
-
         {newsItems.length > 0 && (
           <div className={css.wrapper}>
-            {/* <ReactPaginate
+            <ReactPaginate
               previousLabel={<BsArrowLeft />}
               nextLabel={<BsArrowRight />}
               pageCount={Math.ceil(totalPages) || 0}
@@ -73,7 +75,7 @@ const NewsPage = () => {
               marginPagesDisplayed={2}
               breakLabel={'...'}
               forcePage={activePage}
-            /> */}
+            />
           </div>
         )}
       </Container>

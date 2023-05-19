@@ -4,12 +4,14 @@
   margin-top: 16px;
   gap: 25px;
 }
+
 .WrapperLabelInput {
   display: flex;
   flex-direction: column;
   gap: 5px;
   position: relative;
 }
+
 .LabelStep {
   color: #111111;
   font-weight: 500;
@@ -18,13 +20,14 @@
 }
 
 .Input {
-  border-radius: 20px;
+  border-radius: 40px;
   box-shadow: none;
   outline: none;
   font-size: 16px;
   padding: 15px;
   border: 2px solid #54adff;
 }
+
 .Input:focus {
   border-color: #54adff;
 }
@@ -38,6 +41,7 @@
   line-height: 16px;
   color: #f43f5e;
 }
+
 .ErrorTextLow {
   position: absolute;
   bottom: -25%;
@@ -47,6 +51,7 @@
   line-height: 16px;
   color: #f43f5e;
 }
+
 .LinkAddPEt {
   margin-top: 23.5px;
   display: flex;
@@ -77,7 +82,55 @@
   border: none;
   cursor: pointer;
 }
+
 .ButtonEl {
   display: flex;
   gap: 11.43px;
+}
+
+.SexText {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 26px;
+  color: #111111;
+}
+
+.sexOption {
+  display: flex;
+  gap: 23px;
+  margin-top: 8px;
+}
+
+.sexElement {
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  width: 92px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 19px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: #888888;
+}
+
+.sexElementActive {
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  width: 92px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 19px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: #54adff;
+  /* УБРАТЬ МОЖНО НАЧАЛО*/
+  border: 1px solid #54adff;
+  border-radius: 8px;
+  /* УБРАТЬ МОЖНО КОНЕЦ*/
 }

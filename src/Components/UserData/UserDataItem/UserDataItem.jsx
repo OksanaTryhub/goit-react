@@ -1,19 +1,31 @@
 import React from 'react';
 import { useField } from 'formik';
 
-import EditIcon from 'Components/SvgIcons/EditIcon';
+import {EditIcon} from 'Components/SvgIcons/EditIcon';
+import {ConfirmIcon} from 'Components/SvgIcons/ConfirmIcon';
 
 import css from './UserDataItem.module.css';
 
-const UserDataItem = ({ label, ...props }) => {
-  const [field, meta] = useField(props);
+const UserDataItem = ({ label, fieldName, handleFieldSubmit, ...props }) => {
+  const [field, meta] = useField(props); 
+
+  const handleButtonClick = () => {
+    handleFieldSubmit(fieldName, field.value);
+  };
+
   return (
     <>
       <div className={css.inputWrap}>
         <label className={css.label}>{label}</label>
         <div className={css.wrap}>
           <input {...field} {...props} className={css.input} />
+          {meta.touched && !meta.error ? (
+            <button type="button" onClick={handleButtonClick} className={css.submitBtn}>
+              <ConfirmIcon id="svg" className={css.confirmIcon} />
+            </button>
+        ) : (
           <EditIcon id="svg" className={css.edit} />
+        )}
         </div>
       </div>
       <div className={css.errorWrap}>

@@ -8,10 +8,10 @@ import { userDataValidationSchema } from 'Shared/validation';
 import UserDataItem from './UserDataItem/UserDataItem';
 import defaultUserImg from '../../Shared/images/defaultUserImg.png';
 import CameraIcon from 'Components/SvgIcons/CameraIcon';
-import ConfirmIcon from 'Components/SvgIcons/ConfirmIcon';
+import {ConfirmIcon} from 'Components/SvgIcons/ConfirmIcon';
 import LogoutIcon from 'Components/SvgIcons/LogoutIcon';
 import { PreviewImage } from './UserDataItem';
-import ModalApproveAction from 'Components/Modal/ModalApproveAction';
+import ModalApproveAction from 'Components/ModalApproveAction/ModalApproveAction';
 
 import { logout } from 'Redux/auth/auth-operations';
 import { isUserLogin } from 'Redux/auth/auth-selectors';
@@ -21,20 +21,15 @@ import css from './UserData.module.css';
 const UserData = ({ photo, name, birthday, email, phone, city, onSubmit }) => {
   const [showModal, setShowModal] = useState(false); 
   const isLogin = useSelector(isUserLogin);
-  // const user = useSelector(getUser);
   const navigate = useNavigate();
   const fileRef = useRef(null);
   const dispatch = useDispatch();
 
-  
-
   useEffect(() => {
     if (!isLogin) {
       navigate('/login');
-      
     }
   }, [isLogin, navigate]);
- 
 
   const onLogout = () => {
     setShowModal(true);
@@ -48,20 +43,29 @@ const UserData = ({ photo, name, birthday, email, phone, city, onSubmit }) => {
     dispatch(logout()); 
   }
 
+  const handleSubmit = (values, name, { setSubmitting }) => {
+    // Вызывайте функцию onSubmit и передавайте значения формы в родительский компонент
+    // Пример: onSubmit(values)
+    console.log('Field value:', values);
+    console.log("Filed name=>", name);
+
+    setSubmitting(false);
+  };
+
   return (
     <div className={css.user}>
       <h2 className={css.user__title}>My information:</h2>
       <Formik
         initialValues={{
           file: photo || null,
-          name: name || '',
+          name:name || '',
           email: email || '',
           birthday: birthday || '',
           phone: phone || '',
-          city: city || '',
+          city:city || '',
         }}
         validationSchema={userDataValidationSchema}
-        onSubmit={onSubmit}
+        
       >
         {({ values, setFieldValue }) => (
           <Form className={css.form}>
@@ -110,24 +114,29 @@ const UserData = ({ photo, name, birthday, email, phone, city, onSubmit }) => {
               }}
               className={css.button}
             >
-              <ConfirmIcon id="svg" />
+              <ConfirmIcon id="svg" className={css.confirmIcon}/>
               Confirm
             </button>}
             </div>
             <div className={css.inputContainer}>
               <div className={css.inputWrap}>
-              <UserDataItem type="text" name="name" label="Name" />
-              <UserDataItem type="email" name="email" label="Email" />
-              <UserDataItem type="date" name="birthday" label="Birthday" />
-              <UserDataItem type="text" name="phone" label="Phone" />
-              <UserDataItem type="text" name="city" label="City" />
+              <UserDataItem type="text" name="name" label="Name" handleFieldSubmit={handleSubmit} />
+              <UserDataItem type="email" name="email" label="Email" handleFieldSubmit={handleSubmit} />
+              <UserDataItem type="text" name="birthday" label="Birthday" handleFieldSubmit={handleSubmit} />
+              <UserDataItem type="text" name="phone" label="Phone" handleFieldSubmit={handleSubmit} />
+              <UserDataItem type="text" name="city" label="City" handleFieldSubmit={handleSubmit} />
+              {/* <UserDataItem type="text" name="name" label="Name"/>
+              <UserDataItem type="email" name="email" label="Email"/>
+              <UserDataItem type="text" name="birthday" label="Birthday"/>
+              <UserDataItem type="text" name="phone" label="Phone"/>
+              <UserDataItem type="text" name="city" label="City"/> */}
             </div>
               <Link className={css.link} onClick={onLogout}>
                 <LogoutIcon id='svg' className={css.logoutIcon}/>
                   Log Out
               </Link>
             </div>
-            <button type="submit">Submit</button>
+            {/* <button type="submit">Submit</button> */}
           </Form>
         )}
       </Formik>

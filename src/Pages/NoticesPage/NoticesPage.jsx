@@ -2,8 +2,8 @@ import React from 'react';
 import css from 'Pages/NoticesPage/NoticesPage.module.css';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import ReactPaginate from 'react-paginate';
-// import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
+import ReactPaginate from 'react-paginate';
+import { BsArrowLeft, BsArrowRight } from 'react-icons/bs';
 import Section from 'Components/Section';
 import Title from 'Components/Title/Title';
 import NoticesSearch from 'Components/Notices/NoticesSearch/NoticesSearch';
@@ -22,7 +22,7 @@ import {
   selectIsLoading,
   selectError,
   selectNotices,
-  // selectTotalPages,
+  selectTotalPages,
 } from 'Redux/notices/notices-selectors';
 
 const NoticesPage = () => {
@@ -30,7 +30,7 @@ const NoticesPage = () => {
   const categoryItem = useSelector(selectNotices);
   const isLoading = useSelector(selectIsLoading);
   const error = useSelector(selectError);
-  // const totalPages = useSelector(selectTotalPages);
+  const totalPages = useSelector(selectTotalPages);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState('');
@@ -76,26 +76,26 @@ const NoticesPage = () => {
   }, [category, searchQuery, dispatch]);
 
   //при клике на пагинацию
-  // const handlePageClick = ({ selected }) => {
-  //   const page = selected + 1;
-  //   const categoryURL = getCategoryFromURL();
-  //   dispatch(fetchNoticesByTitle({ category: categoryURL, searchQuery, page }));
-  // };
+  const handlePageClick = ({ selected }) => {
+    const page = selected + 1;
+    const categoryURL = getCategoryFromURL();
+    dispatch(fetchNoticesByTitle({ category: categoryURL, searchQuery, page }));
+  };
 
   return (
     <Section>
+      {isLoading && !error && <Loader />}
       <Container>
         <Title>Find your favorite pet</Title>
         <NoticesSearch handleSearchChange={handleSearchChange} />
         <NoticesCategoriesNav handleCategory={handleCategory} />
 
-        {isLoading && !error && <Loader />}
         {categoryItem && categoryItem.length > 0 && (
           <CategoryList card={categoryItem} />
         )}
         {categoryItem && categoryItem.length > 0 && (
           <div className={css.wrapper}>
-            {/* <ReactPaginate
+            <ReactPaginate
               pageCount={Math.ceil(totalPages) || 0}
               marginPagesDisplayed={2}
               pageRangeDisplayed={2}
@@ -108,7 +108,7 @@ const NoticesPage = () => {
               nextClassName={css['pagination-button']}
               pageClassName={css['pagination-button']}
               activeClassName={css['pagination-active']}
-            /> */}
+            />
           </div>
         )}
       </Container>

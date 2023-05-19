@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: "https://your-pets-rest-api.onrender.com"
-})
+  baseURL: 'https://your-pets-rest-api.onrender.com',
+});
 
 const setToken = token => {
   if (token) {
@@ -19,7 +19,6 @@ export const signup = async data => {
 
 export const login = async data => {
   const { data: result } = await instance.post('/users/login', data);
-
   setToken(result.token);
   return result;
 };

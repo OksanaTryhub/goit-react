@@ -2,21 +2,23 @@ import React, { useState } from 'react';
 import css from './SecondStep.module.css';
 import next from '../../../../Components/SvgIcons/next.svg';
 import cancel from '../../../../Components/SvgIcons/cancel.svg';
+import CustomDatePicker from 'Components/TimePicker/CustomDatePicker/CustomDatePicker';
 import { validationSchema } from 'Shared/validation/addPetValidation';
 
-const SecondStep = ({ handleNext, handlePreviousStep }) => {
-  const [petName, setPetName] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [breed, setBreed] = useState('');
+const SecondStep = ({ handleNext, handlePreviousStep, formData }) => {
+  const [name, setName] = useState(formData.name || '');
+  const [birthday] = useState(formData.birthday || '');
+  const [breed, setBreed] = useState(formData.breed || '');
   const [errors, setErrors] = useState({});
 
   const handleNextValidation = () => {
     validationSchema
-      .validate({ petName, birthDate, breed }, { abortEarly: false })
+      .validate({ name, birthday, breed }, { abortEarly: false })
       .then(() => {
-        handleNext({ petName, birthDate, breed });
+        handleNext({ name, birthday, breed });
       })
       .catch(err => {
+        console.log(err);
         const validationErrors = {};
         err.inner.forEach(error => {
           validationErrors[error.path] = error.message;
@@ -24,6 +26,7 @@ const SecondStep = ({ handleNext, handlePreviousStep }) => {
         setErrors(validationErrors);
       });
   };
+
   return (
     <div className={css.FormWrapper}>
       <div className={css.WrapperLabelInput}>
@@ -34,28 +37,29 @@ const SecondStep = ({ handleNext, handlePreviousStep }) => {
           className={css.Input}
           type="text"
           id="name"
-          value={petName}
-          onChange={e => setPetName(e.target.value)}
-          placeholder="Type name pet"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Type pet name "
         />
         {errors.name && <p className={css.ErrorTextLow}>{errors.name}</p>}
       </div>
       <div className={css.WrapperLabelInput}>
-        <label className={css.LabelStep} htmlFor="birthdate">
+        <CustomDatePicker className={css.Input} />
+        {/* <label className={css.LabelStep} htmlFor="birthdate">
           Date of birth
         </label>
         <input
           className={css.Input}
-          type="text"
+          type="date"
           id="birthdate"
-          value={birthDate}
-          onChange={e => setBirthDate(e.target.value)}
+          value={birthday}
+          onChange={e => setBirthday(e.target.value)}
           required
           placeholder="Type date of birth"
         />
         {errors.birthdate && (
           <p className={css.ErrorText}>{errors.birthdate}</p>
-        )}
+        )} */}
       </div>
       <div className={css.WrapperLabelInput}>
         <label className={css.LabelStep} htmlFor="breed">
@@ -76,7 +80,7 @@ const SecondStep = ({ handleNext, handlePreviousStep }) => {
         <li>
           <button
             className={css.LinkAddPEtLitkCancel}
-            onClick={handlePreviousStep}
+            onClick={() => handlePreviousStep(formData)}
           >
             <div className={css.ButtonEl}>
               <img src={cancel} alt="Next" />

@@ -1,119 +1,218 @@
 import css from './AddPetPage.module.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CurrentSteps from './Steps/CurrentSteps';
-// import FirstStep from './Steps/Step1/FirstStep';
-// import SecondStep from './Steps/Step2/SecondStep';
-// import ThreeStep from './Steps/Step3/ThreeStep';
+import Section from 'Components/Section/Section';
+import Background from 'Components/Background/Background';
 import FirstSteps from './Steps/Step1/FirstSteps';
 import StepsRenderSecond from './Steps/Step2/StepsRenderSecond';
 import StepsRenderThree from './Steps/Step3/StepsRenderThree';
+import ModalWindow from 'Components/ModalWindow';
+// import AddPetPageTitles from './AddPetPageTitles';
+
+import instance from '../../Shared/api/auth-api';
 
 function AddPetPage() {
   const [step, setStep] = useState(1);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedOption, setSelectedOption] = useState('');
   const [activeButton, setActiveButton] = useState(null);
-  // const [petName, setPetName] = useState('');
-  // const [birthDate, setBirthDate] = useState('');
-  // const [breed, setBreed] = useState('');
-  const [setPetName] = useState('');
-  const [setPetTitle] = useState('');
-  const [setBirthDate] = useState('');
-  const [setBreed] = useState('');
-  // const [errors, setErrors] = useState({});
 
-  // const [petPhoto, setPetPhoto] = useState(null);
-  // const [comments, setComments] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
-  // const [formData, setFormData] = useState({
-  //   title: '',
-  //   category: '',
-  //   name: '',
-  //   birthday: '',
-  //   breed: '',
-  //   place: '',
-  //   price: '',
-  //   sex: '',
-  //   comments: '',
-  // });
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    console.log('new state FORM DATA:', formData);
+  }, [formData]);
 
   const navigate = useNavigate();
 
   const handleOptionChange = (option, number) => {
+    console.log(option);
+    setFormData(prevData => ({ ...prevData, category: option }));
     setSelectedOption(option);
     setActiveButton(number);
   };
 
-  const handleNext = ({ petName, birthdate, breed, petTitle }) => {
+  const handleNext = stepData => {
+    console.log(' YF:FN NEXT ');
     if (selectedOption && currentStep < 3) {
       setStep(step + 1);
       setCurrentStep(currentStep + 1);
     } else {
       alert('Please select a breed');
     }
-    // setPetName(petName);
-    // setBirthDate(birthdate);
-    // setBreed(breed);
-    setPetName(petName);
-    setBirthDate(birthdate);
-    setBreed(breed);
-    setPetTitle(petTitle);
+
+    setFormData(prevData => {
+      return { ...prevData, ...stepData };
+    });
   };
 
-  const handlePreviousStep = () => {
+  const handlePreviousStep = stepData => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
     setStep(step - 1);
+    setFormData(prevData => {
+      return { ...prevData, ...stepData };
+    });
   };
 
   const handleCancel = () => {
     navigate(-1);
   };
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    // Логіка для перевірки та відправки форми на бекенд
-    // Переадресація користувача на UserPage або NoticesPage в залежності від категорії
+  const handleCloseModal = () => {
+    setShowModal(false);
+    navigate('/user');
   };
 
-  // const generateStepNameForm = () => {
-  //   switch (step) {
-  //     case 1:
-  //       return;
-  //   }
-  // };
+  const savePet = async (endpoint, category, data) => {
+    try {
+      const response = await instance.post(`${endpoint}${category}`, data);
+      console.log(response);
+
+      if (response.status === 201) {
+        setShowModal(true);
+      }
+
+      return response.data;
+    } catch (error) {
+      return error.message;
+    }
+  };
+
+  const handleSubmit = stepData => {
+    const sendDataForm = { ...formData, ...stepData };
+    const { category } = sendDataForm;
+
+    delete sendDataForm.category;
+
+    console.log('handleSubmit   OOOOOOOOOOOOO', sendDataForm);
+    // notice-image
+    const formDataSend = new FormData();
+
+    for (const key in sendDataForm) {
+      formDataSend.append(key, sendDataForm[key]);
+    }
+    if (category === 'your-pet') {
+      savePet('/pets/', '', formDataSend);
+    } else {
+      savePet('/notices/user-notices/', category, formDataSend);
+    }
+
+    setFormData(prevData => ({ ...prevData, ...stepData }));
+  };
 
   return (
-    <div className={css.WrapperAddPet}>
-      {step === 1 && <h2 className={css.AddPet}>Add pet</h2>}
-      {step === 2 && <h2 className={css.AddPet}>Personal Details</h2>}
-      {step === 3 && <h2 className={css.AddPet}>More info</h2>}
-      <CurrentSteps currentStep={currentStep} />
-      {step === 1 && (
-        <FirstSteps
-          handleNext={handleNext}
-          handleCancel={handleCancel}
-          handleOptionChange={handleOptionChange}
-          activeButton={activeButton}
-        />
+    <Section>
+      <Background />
+      <div
+        className={`${
+          step === 3 &&
+          (selectedOption === 'sell' ||
+            selectedOption === 'lost-found' ||
+            selectedOption === 'in-good-hands')
+            ? css.WrapperAddPetThree
+            : css.WrapperAddPet
+        }`}
+      >
+        <div
+          className={`${
+            step === 3 &&
+            (selectedOption === 'sell' ||
+              selectedOption === 'lost-found' ||
+              selectedOption === 'in-good-hands')
+              ? css.StepInfoMidl
+              : ''
+          }`}
+        >
+          {step === 1 && <h2 className={css.AddPet}>Add pet</h2>}
+          {selectedOption === 'your-pet' ? (
+            <>
+              {step === 2 || step === 3 ? (
+                <h2 className={css.AddPet}>Add my pet</h2>
+              ) : (
+                ''
+              )}
+            </>
+          ) : (
+            ''
+          )}
+          {selectedOption === 'sell' ? (
+            <>
+              {step === 2 || step === 3 ? (
+                <h2 className={css.AddPet}>Add pet for sell</h2>
+              ) : (
+                ''
+              )}
+            </>
+          ) : (
+            ''
+          )}
+          {selectedOption === 'lost-found' ? (
+            <>
+              {step === 2 || step === 3 ? (
+                <h2 className={css.AddPet}>Add lost pet</h2>
+              ) : (
+                ''
+              )}
+            </>
+          ) : (
+            ''
+          )}
+          {selectedOption === 'in-good-hands' ? (
+            <>
+              {step === 2 || step === 3 ? (
+                <h2 className={css.AddPet}>Add pet in good hands</h2>
+              ) : (
+                ''
+              )}
+            </>
+          ) : (
+            ''
+          )}
+          <CurrentSteps
+            currentStep={currentStep}
+            selectedOption={selectedOption}
+          />
+        </div>
+        {step === 1 && (
+          <FirstSteps
+            handleNext={handleNext}
+            handleCancel={handleCancel}
+            handleOptionChange={handleOptionChange}
+            activeButton={activeButton}
+          />
+        )}
+        {step === 2 && (
+          <StepsRenderSecond
+            selectedOption={selectedOption}
+            handleNext={handleNext}
+            handlePreviousStep={handlePreviousStep}
+            formData={formData}
+          />
+        )}
+        {step === 3 && (
+          <StepsRenderThree
+            selectedOption={selectedOption}
+            handleNext={handleSubmit}
+            handlePreviousStep={handlePreviousStep}
+            formData={formData}
+          />
+        )}
+      </div>
+      {showModal && (
+        <ModalWindow
+          buttonText="Хорошо"
+          onClose={handleCloseModal}
+          title="Ваш питомец успешно создан"
+        >
+          Поздравляю, Ваш питомец был успешно добавлен на наш сайт
+        </ModalWindow>
       )}
-      {step === 2 && (
-        <StepsRenderSecond
-          selectedOption={selectedOption}
-          handleNext={handleNext}
-          handlePreviousStep={handlePreviousStep}
-        />
-      )}
-      {step === 3 && (
-        <StepsRenderThree
-          selectedOption={selectedOption}
-          handleNext={handleSubmit}
-          handlePreviousStep={handlePreviousStep}
-        />
-      )}
-    </div>
+    </Section>
   );
 }
 

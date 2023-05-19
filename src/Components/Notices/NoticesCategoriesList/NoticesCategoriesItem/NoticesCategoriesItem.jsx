@@ -7,7 +7,6 @@ import { AddToFavorite } from 'Components/SvgIcons/AddToFavorite';
 
 const CategoryItem = ({ _id, title, imgUrl }) => {
   return (
-    // <ul className={css.card_list}>
     <li key={_id} className={css.card_item}>
       <div className={css.card_wrap}>
         <img src={imgUrl} alt={title} className={css.image} />
